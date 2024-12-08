@@ -3389,7 +3389,11 @@ static int __init GobiUSBNetModInit( void )
    int j;
    iModuleExit = 0;
    iIsSpinIsLockedSupported = isSpinLockCheckSupport();
-   gpClass = class_create( THIS_MODULE, "GobiQMI" );
+   #if LINUX_VERSION_CODE >= KERNEL_VERSION(6,4,0)
+      gpClass = class_create("GobiQMI");
+   #else
+      gpClass = class_create(THIS_MODULE, "GobiQMI");
+   #endif
    if (IS_ERR( gpClass ) == true)
    {
       DBG( "error at class_create %ld\n",
@@ -3953,8 +3957,8 @@ void ClearUsbNetTxStatics(struct usbnet *pDev)
       struct pcpu_sw_netstats *stats64 = this_cpu_ptr(pDev->stats64);
       #endif
       u64_stats_update_begin(&stats64->syncp);
-      stats64->tx_packets = 0;
-      stats64->tx_bytes = 0;
+      u64_stats_set(&stats64->tx_packets, 0);
+      u64_stats_set(&stats64->tx_bytes, 0);
       u64_stats_update_end(&stats64->syncp);
       #else
       struct net_device_stats * pStats = &(pDev->net->stats);

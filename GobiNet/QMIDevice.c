@@ -132,6 +132,9 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <linux/inetdevice.h>
 #include <linux/net.h>
 #include <linux/route.h>
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION( 6,3,0 ))
+#include <linux/filelock.h>
+#endif
 #if (LINUX_VERSION_CODE < KERNEL_VERSION( 4,2,0 ))
 #include <linux/syscalls.h>
 #endif
